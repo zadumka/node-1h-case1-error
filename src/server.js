@@ -1,14 +1,14 @@
-import express from 'express';
-import cors from 'cors';
+"import express from 'express';
+import 'dotenv/config';
+
 import pino from 'pino-http';
 
 const app = express();
-
 const PORT = process.env.PORT ?? 3030;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
 app.use(
   pino({
     level: 'info',
@@ -59,4 +59,4 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
+});"
