@@ -5,7 +5,6 @@ import pino from 'pino-http';
 const app = express();
 
 const PORT = process.env.PORT ?? 3030;
-
 // Middleware
 app.use(express.json());
 app.use(cors());
