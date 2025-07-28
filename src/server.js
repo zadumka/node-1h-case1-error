@@ -1,60 +1,39 @@
-import express from 'express';
+"import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import pino from 'pino-http';
+// ПОМИЛКА: Відсутній імпорт pino-http
 
 const app = express();
-const PORT = process.env.PORT ?? 3030;
-
-
-app.use((req, res, next) => {
-  if (req.path === '/notes' || req.path.startsWith('/notes/') || req.path === '/test-error') {
-    next();
-  } else {
-    res.status(404).json({
-      message: 'Route not found',
-    });
-  }
-});
+// ПОМИЛКА: Неправильне встановлення порту
+const PORT = process.env.PORT || 8080; // має бути 3030 за замовчуванням
 
 // Middleware
-app.use(express.json());
+// ПОМИЛКА: Відсутній express.json() middleware
 app.use(cors());
-app.use(
-  pino({
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'HH:MM:ss',
-        ignore: 'pid,hostname',
-        messageFormat:
-          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideObject: true,
-      },
-    },
-  }),
-);
+// ПОМИЛКА: Відсутній pino-http middleware
 
-// Routes
-app.get('/notes', (req, res) => {
+// ПОМИЛКА: Неправильні маршрути
+app.get('/note', (req, res) => { // має бути /notes
   res.status(200).json({
     message: 'Retrieved all notes',
   });
 });
 
-app.get('/notes/:noteId', (req, res) => {
-  const { noteId } = req.params;
+app.get('/note/:id', (req, res) => { // має бути /notes/:noteId
+  const { id } = req.params; // має бути noteId
   res.status(200).json({
-    message: `Retrieved note with ID: ${noteId}`,
+    message: `Retrieved note with ID: ${id}`,
   });
 });
 
-app.get('/test-error', () => {
-  throw new Error('Simulated server error');
-});
+// ПОМИЛКА: Відсутній маршрут /test-error
 
+// Custom middleware
+app.use((req, res) => {
+  res.status(404).json({
+    message: 'Route not found',
+  });
+});
 
 app.use((err, req, res, next) => {
   res.status(500).json({
@@ -64,4 +43,4 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
+});"
