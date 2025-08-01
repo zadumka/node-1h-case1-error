@@ -5,30 +5,36 @@ const noteSchema = new Schema(
     title: {
       type: String,
       required: true,
-      trim: true,
+     
     },
     content: {
       type: String,
       required: false,
-      default: '',
-      trim: true,
+
+      default: null,
+      
     },
     tag: {
       type: String,
       required: false,
-      default: 'Todo',
-      
+     
+      default: 'Work',
       enum: [
-        'work',
-        'personal',
-        'meeting',
-        'shopping',
-        'ideas',
-        'todo',
+        'Work',
+        'Personal',
+        'Meeting',
+        'Shopping',
+        'Ideas',
+        'Travel',
+        'Finance',
+        'Health',
+        'Important',
+        'Todo',
       ],
     },
   },
   {
+    timestamps: true,
     versionKey: false,
   },
 );
