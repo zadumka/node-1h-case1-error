@@ -1,12 +1,10 @@
+import { model, Schema } from 'mongoose';
 
-import mongoose from 'mongoose';
-
-
-const noteSchema = new mongoose.Schema(
+const noteSchema = new Schema(
   {
     title: {
       type: String,
-     
+      required: true,
       trim: true,
     },
     content: {
@@ -19,24 +17,20 @@ const noteSchema = new mongoose.Schema(
       type: String,
       required: false,
       default: 'Todo',
+      
       enum: [
-        'Work',
-        'Personal',
-        'Meeting',
-        'Shopping',
-        'Ideas',
-        'Travel',
-        'Finance',
-        'Health',
-        'Important',
-        'Todo',
+        'work',
+        'personal',
+        'meeting',
+        'shopping',
+        'ideas',
+        'todo',
       ],
     },
   },
   {
-    timestamps: true,
     versionKey: false,
   },
 );
 
-export const Note = mongoose.model('Note', noteSchema);"
+export const Note = model('Note', noteSchema);
