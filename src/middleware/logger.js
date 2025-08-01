@@ -5,14 +5,12 @@ export const logger = pino({
   transport: {
     target: 'pino-pretty',
     options: {
-      colorize: true,
       
-      timeTranslate: 'HH:MM:ss',
-      ignore: 'pid,hostname',
+      translateTime: 'HH:MM:ss',
       
-      format:
+      messageFormat:
         '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-      hideObject: true,
+     
     },
   },
 });
