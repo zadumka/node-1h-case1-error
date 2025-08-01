@@ -3,34 +3,23 @@ import { model, Schema } from 'mongoose';
 const noteSchema = new Schema(
   {
     title: {
-      type: String,
-      required: true,
      
+      type: Number,
+      required: true,
+      trim: true,
     },
     content: {
       type: String,
-      required: false,
-
-      default: null,
-      
+     
+      required: true,
+      default: '',
+      trim: true,
     },
     tag: {
       type: String,
       required: false,
+      default: 'Todo',
      
-      default: 'Work',
-      enum: [
-        'Work',
-        'Personal',
-        'Meeting',
-        'Shopping',
-        'Ideas',
-        'Travel',
-        'Finance',
-        'Health',
-        'Important',
-        'Todo',
-      ],
     },
   },
   {
