@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import Router from 'express';
 import {
   createNote,
   deleteNote,
@@ -9,13 +9,10 @@ import {
 
 const router = Router();
 
-
-router.get('/note', getAllNotes);
-
-router.get('/notes/:id', getNoteById);
+router.get('/notes', getAllNotes);
+router.get('/notes/:noteId', getNoteById);
 router.post('/notes', createNote);
-
-router.delete('/note/:noteId', deleteNote);
+router.delete('/notes/:noteId', deleteNote);
 router.patch('/notes/:noteId', updateNote);
 
 export default router;
