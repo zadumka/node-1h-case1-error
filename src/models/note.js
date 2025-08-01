@@ -1,10 +1,12 @@
-import { model, Schema } from 'mongoose';
 
-const noteSchema = new Schema(
+import mongoose from 'mongoose';
+
+
+const noteSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+     
       trim: true,
     },
     content: {
@@ -37,4 +39,4 @@ const noteSchema = new Schema(
   },
 );
 
-export const Note = model('Note', noteSchema);
+export const Note = mongoose.model('Note', noteSchema);"
