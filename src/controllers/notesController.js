@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
-import { Note } from '../models/note'; 
+import { Note } from '../models/note.js';
+
 export const getAllNotes = async (req, res) => {
   const { page = 1, perPage = 10, tag, search = '' } = req.query;
   const skip = (page - 1) * perPage;
@@ -32,12 +33,10 @@ export const getAllNotes = async (req, res) => {
   });
 };
 
-export const getNoteById = async (req, res, next) => {
+export const getNoteById = async (req, res) => {
   const { noteId } = req.params;
   const note = await Note.findById(noteId);
-  if (!note) {
-    return next(createHttpError(404, 'Note not found'));
-  }
+ 
   res.status(200).json(note);
 };
 
