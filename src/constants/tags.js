@@ -7,5 +7,6 @@ export const TAGS = [
   'Travel',
   'Finance',
   'Health',
-  'Todo',
+  'Important',
+  'Work', 
 ];
