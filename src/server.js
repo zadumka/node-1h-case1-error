@@ -1,7 +1,8 @@
 import express from 'express';
+import 'dotenv/config';
 import cors from 'cors';
 import { errors } from 'celebrate';
-import { logger } from './middleware/logger.js';
+import { logger } from './middleware/logger'; 
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { connectMongoDB } from './db/connectMongoDB.js';
