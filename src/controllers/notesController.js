@@ -12,9 +12,10 @@ export const getAllNotes = async (req, res) => {
   }
 
   if (search) {
+   
     notesQuery.or([
-      { title: { $regex: search, $options: 'i' } },
-      { content: { $regex: search, $options: 'i' } },
+      { title: { $regex: search } },
+      { content: { $regex: search } },
     ]);
   }
 
@@ -33,10 +34,12 @@ export const getAllNotes = async (req, res) => {
   });
 };
 
-export const getNoteById = async (req, res) => {
+export const getNoteById = async (req, res, next) => {
   const { noteId } = req.params;
   const note = await Note.findById(noteId);
- 
+  if (!note) {
+    return next(createHttpError(404, 'Note not found'));
+  }
   res.status(200).json(note);
 };
 
