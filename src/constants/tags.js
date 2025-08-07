@@ -1,4 +1,4 @@
-const TAGS = [
+export const TAGS = [
   'Work',
   'Personal',
   'Meeting',
@@ -7,6 +7,5 @@ const TAGS = [
   'Travel',
   'Finance',
   'Health',
-  'Important',
   'Todo',
 ];
