@@ -8,12 +8,7 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
-    content: {
-      type: String,
-      required: false,
-      default: '',
-      trim: true,
-    },
+    
     tag: {
       type: String,
       required: false,
@@ -21,7 +16,8 @@ const noteSchema = new Schema(
       enum: [...TAGS],
     },
     userId: {
-      type: String, 
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
   },
