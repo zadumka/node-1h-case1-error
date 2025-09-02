@@ -22,16 +22,11 @@ const userSchema = new Schema(
   },
 );
 
-userSchema.pre('save', function (next) {
-  if (!this.username) {
-    this.username = this.email;
-  }
-  next();
-});
-
 
 userSchema.methods.toJSON = function () {
-  return this.toObject();
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
 };
 
 export const User = model('User', userSchema);
