@@ -19,10 +19,7 @@ const sessionSchema = new Schema(
       type: Date,
       required: true,
     },
-    refreshTokenValidUntil: {
-      type: Date,
-      required: true,
-    },
+    
   },
   {
     timestamps: true,

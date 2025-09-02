@@ -19,7 +19,6 @@ export const registerUser = async (req, res, next) => {
     password: hashedPassword,
   });
 
-  // Create new session and set cookies
   const newSession = await createSession(newUser._id);
   setSessionCookies(res, newSession);
 
@@ -39,10 +38,8 @@ export const loginUser = async (req, res, next) => {
     return next(createHttpError(401, 'Invalid credentials'));
   }
 
-  // Delete old session
-  await Session.deleteOne({ userId: user._id });
+  
 
-  // Create new session and set cookies
   const newSession = await createSession(user._id);
   setSessionCookies(res, newSession);
 
@@ -64,7 +61,6 @@ export const logoutUser = async (req, res) => {
 };
 
 export const refreshUserSession = async (req, res, next) => {
-  // Find and check existing session
   const session = await Session.findOne({
     _id: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
@@ -81,13 +77,11 @@ export const refreshUserSession = async (req, res, next) => {
     return next(createHttpError(401, 'Session token expired'));
   }
 
-  // Delete old session
   await Session.deleteOne({
     _id: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
 
-  // Create new session and set cookies
   const newSession = await createSession(session.userId);
   setSessionCookies(res, newSession);
 

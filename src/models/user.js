@@ -29,10 +29,9 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+
 userSchema.methods.toJSON = function () {
-  const obj = this.toObject();
-  delete obj.password;
-  return obj;
+  return this.toObject();
 };
 
 export const User = model('User', userSchema);

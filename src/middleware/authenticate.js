@@ -2,7 +2,6 @@ import createHttpError from 'http-errors';
 import { Session } from '../models/session.js';
 import { User } from '../models/user.js';
 
-// UPDATE: Добавили мидлвару проверки аутентификации
 export const authenticate = async (req, res, next) => {
   if (!req.cookies.accessToken) {
     next(createHttpError(401, 'Missing access token'));
@@ -19,7 +18,7 @@ export const authenticate = async (req, res, next) => {
   }
 
   const isAccessTokenExpired =
-    new Date() > new Date(session.accessTokenValidUntil);
+    new Date() < new Date(session.accessTokenValidUntil); 
 
   if (isAccessTokenExpired) {
     return next(createHttpError(401, 'Access token expired'));
@@ -33,6 +32,5 @@ export const authenticate = async (req, res, next) => {
   }
 
   req.user = user;
-
   next();
 };
