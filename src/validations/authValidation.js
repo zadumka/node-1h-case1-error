@@ -2,7 +2,7 @@ import { Joi, Segments } from 'celebrate';
 
 export const registerUserSchema = {
   [Segments.BODY]: {
-    email: Joi.string().email().required(),
+    email: Joi.string().required(), 
     password: Joi.string().min(8).required(),
   },
 };
