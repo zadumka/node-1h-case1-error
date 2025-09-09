@@ -13,3 +13,17 @@ export const loginUserSchema = {
     password: Joi.string().required(),
   },
 };
+
+// UPDATE: нова схема
+export const requestResetEmailSchema = {
+  [Segments.BODY]: {
+    email: Joi.string().email().required(),
+  },
+};
+
+export const resetPasswordSchema = {
+  [Segments.BODY]: {
+    password: Joi.string().required(),
+    token: Joi.string().required(),
+  },
+};

@@ -1,47 +1,92 @@
 import createHttpError from 'http-errors';
 import { Note } from '../models/note.js';
 
+export const getAllNotes = async (req, res) => {
+  const { page = 1, perPage = 10, tag, search = '' } = req.query;
+  const skip = (page - 1) * perPage;
 
-export const getAllNotes = (req, res) => {
- 
-  const notes = Note.find();
-  res.status(200).json(notes);
+  // UPDATE: добавили в кверю поиск по id юзера
+  const notesQuery = Note.find({ userId: req.user._id });
+
+  if (tag) {
+    notesQuery.where('tag').equals(tag);
+  }
+
+  if (search) {
+    notesQuery.or([
+      { title: { $regex: search, $options: 'i' } },
+      { content: { $regex: search, $options: 'i' } },
+    ]);
+  }
+
+  const [totalNotes, notes] = await Promise.all([
+    notesQuery.clone().countDocuments(),
+    notesQuery.skip(skip).limit(perPage),
+  ]);
+  const totalPages = Math.ceil(totalNotes / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalNotes,
+    totalPages,
+    notes,
+  });
 };
 
 export const getNoteById = async (req, res, next) => {
-  const { noteId } = req.params;
-  const note = await Note.findById(noteId);
+  // UPDATE: изменили findById на findOne и добавили в поиск критерий по userId
+  const note = await Note.findOne({
+    _id: req.params.noteId,
+    userId: req.user._id,
+  });
+
   if (!note) {
     return next(createHttpError(404, 'Note not found'));
   }
+
   res.status(200).json(note);
 };
 
 export const createNote = async (req, res) => {
-  const newNote = await Note.create(req.body);
-  
-  res.status(200).json(newNote);
+  // UPDATE: Добавили userId
+  const newNote = await Note.create({
+    ...req.body,
+    userId: req.user._id,
+  });
+  res.status(201).json(newNote);
 };
 
 export const deleteNote = async (req, res, next) => {
+  // UPDATE: Добавили проверку владельца через userId
   const note = await Note.findOneAndDelete({
     _id: req.params.noteId,
+    userId: req.user._id,
   });
+
   if (!note) {
     return next(createHttpError(404, 'Note not found'));
   }
-  
-  res.status(204).send(note);
+
+  res.status(200).send(note);
 };
 
 export const updateNote = async (req, res, next) => {
+  // UPDATE: Добавили проверку владельца через userId
   const note = await Note.findOneAndUpdate(
-    { _id: req.params.noteId },
+    {
+      _id: req.params.noteId,
+      userId: req.user._id,
+    },
     req.body,
-    { new: true },
+    {
+      new: true,
+    },
   );
+
   if (!note) {
     return next(createHttpError(404, 'Note not found'));
   }
+
   res.status(200).json(note);
 };
