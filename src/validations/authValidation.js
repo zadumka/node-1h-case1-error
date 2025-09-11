@@ -1,31 +1,33 @@
 import { Joi, Segments } from 'celebrate';
 
+
 export const registerUserSchema = {
   [Segments.BODY]: {
-    email: Joi.string().email().required(),
-    
-    password: Joi.string().min(6).required(),
+    email: Joi.string().email(),
+    password: Joi.string().min(8),
   },
 };
 
 export const loginUserSchema = {
-  [Segments.BODY]: {
+  body: {
     email: Joi.string().email().required(),
-    
-    password: Joi.string(),
+    password: Joi.string().required(),
   },
 };
+
 
 export const requestResetEmailSchema = {
-  [Segments.BODY]: {
+  [Segments.BODY]: Joi.object({
     email: Joi.string().email().required(),
-  },
+  }),
 };
 
 
-export const resetPasswordSchema = {
+const resetPasswordSchema = {
   [Segments.BODY]: {
     password: Joi.string().required(),
-    token: Joi.string(),
+    token: Joi.string().required(),
   },
 };
+
+export default resetPasswordSchema;
