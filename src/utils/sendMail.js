@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-го
+
 export default async function sendEmail(options) {
- 
+  
   return transporter.sendMail(options);
-}
+}"
