@@ -1,6 +1,5 @@
 import { Readable } from 'node:stream';
-
-import cloudinary from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
   secure: true,
@@ -10,18 +9,23 @@ cloudinary.config({
 });
 
 export async function saveFileToCloudinary(buffer) {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: 'notehub/avatars',
-        
-        overwrite: true,
-        unique_filename: true,
-        use_filename: false,
-      },
-      (err, result) => (err ? reject(err) : resolve(result)),
-    );
+  
+  const uploadStream = cloudinary.uploader.upload_stream(
+    {
+      folder: 'notehub/avatars',
+      resource_type: 'image',
+      overwrite: true,
+      unique_filename: true,
+      use_filename: false,
+    },
+    (err, result) => {
+      if (err) {
+        throw err; 
+      }
+      return result; 
+    },
+  );
 
-    Readable.from(buffer).pipe(uploadStream);
-  });
+
+  uploadStream(buffer);
 }
