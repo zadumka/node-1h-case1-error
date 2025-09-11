@@ -121,7 +121,7 @@ export const requestResetEmail = async (req, res, next) => {
   const template = handlebars.compile(templateSource);
 
   const html = template({
-    name: user.name,
+    name: user.username,
     link: `${process.env.FRONTEND_DOMAIN}/reset-password?token=${resetToken}`,
   });
 
