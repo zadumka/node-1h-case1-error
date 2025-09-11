@@ -6,10 +6,10 @@ import { updateUserAvatar } from '../controllers/userController.js';
 const router = Router();
 
 
-router.post(
+router.patch(
   '/users/me/avatar',
-  authenticate,
   upload.single('avatar'),
+  authenticate,
   updateUserAvatar,
 );
 
