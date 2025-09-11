@@ -105,7 +105,7 @@ export const requestResetEmail = async (req, res, next) => {
   const resetToken = jwt.sign(
     { sub: user._id, email },
     process.env.JWT_SECRET,
-    { expiresIn: '15h' }, 
+    { expiresIn: '15m' },
   );
 
   const templatePath = path.resolve('src/templates/reset-password-email.html');
@@ -113,7 +113,7 @@ export const requestResetEmail = async (req, res, next) => {
   const template = handlebars.compile(templateSource);
 
   const html = template({
-    name: user.username,
+    name: user.email,
     link: `${process.env.FRONTEND_DOMAIN}/reset-password?token=${resetToken}`,
   });
 
@@ -139,8 +139,7 @@ export const resetPassword = async (req, res, next) => {
   try {
     payload = jwt.verify(token, process.env.JWT_SECRET);
   } catch {
-    return next(createHttpError(401, 'Invalid or expired token'));
-  }
+    return next(createHttpError(404, 'Invalid or expired token')); 
 
   const user = await User.findOne({ _id: payload.sub, email: payload.email });
   if (!user) {
@@ -149,7 +148,7 @@ export const resetPassword = async (req, res, next) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  User.updateOne({ _id: user._id }, { password: hashedPassword }); 
+  await User.updateOne({ _id: user._id }, { password: hashedPassword });
 
   res.status(200).json({ message: 'Password reset successfully' });
 };
