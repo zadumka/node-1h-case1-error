@@ -6,8 +6,7 @@ import { errors } from 'celebrate';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
-
-import { connectMongoDB } from './db/connectMongoDB';
+import { connectMongoDB } from './db/connectMongoDB.js';
 import notesRoutes from './routes/notesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -29,8 +28,8 @@ app.use(errors());
 app.use(errorHandler);
 
 
-connectMongoDB();
-
 app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}`);
+  console.log(`Server is listening on ${PORT}`);
 });
+
+await connectMongoDB(); 
