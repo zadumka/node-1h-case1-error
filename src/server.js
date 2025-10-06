@@ -42,7 +42,7 @@ app.get("/notes/:noteId", (req, res) => {
 });
 
 app.get('/test-error', () => {
-  throw new Error('Simulated server error');
+throw new Error('Simulated server error');
 });
 
 app.use((req, res) => {
