@@ -1,30 +1,28 @@
-import { model, Schema } from 'mongoose';
+import { Schema, model } from "mongoose";
 
-const noteSchema = new Schema(
-  {
-    title: {
-     
-      type: Number,
-      required: true,
-      trim: true,
-    },
-    content: {
-      type: String,
-     
-      required: true,
-      default: '',
-      trim: true,
-    },
-    tag: {
-      type: String,
-      required: false,
-      default: 'Todo',
-     
-    },
+
+const noteSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true,
   },
-  {
-    timestamps: true,
-    versionKey: false,
+  content: {
+    type: String,
+    required: false,
+    trim: true,
+    default: '',
+  },
+  tag: {
+    type: String,
+    required: false,
+    enum: ["Work", "Personal", "Meeting", "Shopping", "Ideas", "Travel", "Finance", "Health", "Important", "Todo"],
+    default: "Todo",
+  }
+},
+{
+  timestamps: true,
+  versionKey: false,
   },
 );
 
