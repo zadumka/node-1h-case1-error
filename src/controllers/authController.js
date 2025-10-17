@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
-import { Session } from '../models/session.js';
+
 import { createSession, setSessionCookies } from '../services/auth.js';
+import { Session } from '../models/session.js';
 
 export const registerUser = async (req, res, next) => {
   const { email, password } = req.body;
@@ -14,10 +15,7 @@ export const registerUser = async (req, res, next) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await User.create({
-    email,
-    password: hashedPassword,
-  });
+  const newUser = await User.create({ email, password: hashedPassword });
 
   const newSession = await createSession(newUser._id);
   setSessionCookies(res, newSession);
@@ -37,13 +35,11 @@ export const loginUser = async (req, res, next) => {
   if (!isValidPassword) {
     return next(createHttpError(401, 'Invalid credentials'));
   }
-
   await Session.deleteOne({ userId: user._id });
 
   const newSession = await createSession(user._id);
   setSessionCookies(res, newSession);
-
-  res.status(201).json(user); 
+  res.status(200).json(user);
 };
 
 export const logoutUser = async (req, res) => {
@@ -53,9 +49,14 @@ export const logoutUser = async (req, res) => {
     await Session.deleteOne({ _id: sessionId });
   }
 
-  
-  res.status(200).send(); 
+  res.clearCookie('sessionId');
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 };
+
+
 
 export const refreshUserSession = async (req, res, next) => {
   const session = await Session.findOne({
