@@ -107,9 +107,7 @@ export const requestResetEmail = async (req, res, next) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(200).json({
-      message: 'Password reset email sent successfully',
-    });
+    return next(createHttpError(404, 'User not found'));
   }
 
   const resetToken = jwt.sign(
