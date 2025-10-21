@@ -1,33 +1,36 @@
-import { Joi, Segments } from 'celebrate';
+import { Joi, Segments } from "celebrate"
 
-
-export const registerUserSchema = {
-  [Segments.BODY]: {
-    email: Joi.string().email(),
-    password: Joi.string().min(8),
-  },
-};
-
-export const loginUserSchema = {
-  body: {
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  },
-};
-
+export const resetPasswordSchema = {
+	[Segments.BODY]: Joi.object({
+		password: Joi.string().min(8).required(),
+		token: Joi.string().required(),
+	}),
+}
 
 export const requestResetEmailSchema = {
-  [Segments.BODY]: Joi.object({
-    email: Joi.string().email().required(),
-  }),
-};
+	[Segments.BODY]: Joi.object({
+		email: Joi.string().email().required(),
+	}),
+}
 
+export const registerUserSchema = {
+	[Segments.BODY]: Joi.object({
+		email: Joi.string().email().required().messages({
+			"string.base": "Email must be a string",
+			"email.base": "Email must be a valid email",
+			"any.required": "Email is required",
+		}),
+		password: Joi.string().min(8).required().messages({
+			"string.base": "Password must be a string",
+			"any.min": "Password must be at least {#limit} characters",
+			"any.required": "Password is required",
+		}),
+	}),
+}
 
-const resetPasswordSchema = {
-  [Segments.BODY]: {
-    password: Joi.string().required(),
-    token: Joi.string().required(),
-  },
-};
-
-export default resetPasswordSchema;
+export const loginUserSchema = {
+	[Segments.BODY]: Joi.object({
+		email: Joi.string().email().required(),
+		password: Joi.string().required(),
+	}),
+}
