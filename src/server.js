@@ -19,15 +19,4 @@ app.use(express.json()); // парсимо JSON у body
 /* Маршрути */
 app.use('/api/notes', notesRouter);
 
-/* Обробка помилок */
-app.use(errors()); // обробка помилок celebrate - ДОДАНО ЦЕЙ РЯДОК!
-app.use(notFoundHandler); // обробка 404
-app.use(errorHandler); // обробка інших помилок
 
-// підключення до MongoDB
-await connectMongoDB();
-
-// запуск сервера
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
