@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import { celebrate } from 'celebrate';
+import { Router } from "express"
 import {
-  createNote,
-  deleteNote,
-  getAllNotes,
-  getNoteById,
-  updateNote,
-} from '../controllers/notesController.js';
+	createNote,
+	deleteNote,
+	getNoteById,
+	getAllNotes,
+	updateNote,
+} from "../controllers/notesController.js"
+import { celebrate } from "celebrate"
 import {
   createNoteSchema as wrongCreateSchema,
   getAllNotesSchema as wrongGetAllSchema,
@@ -15,9 +15,10 @@ import {
 } from '../validations/authValidation.js'; 
 import { authenticate } from '../middleware/authenticate.js';
 
-const router = Router();
+const router = Router()
 
-router.use(authenticate);
+router.get("/notes", celebrate(getAllNotesSchema), getAllNotes)
+router.post("/notes", celebrate(createNoteSchema), createNote)
 
 router.get('/notes', celebrate(wrongGetAllSchema), getAllNotes);
 router.get('/notes/:noteId', celebrate(wrongNoteIdSchema), getNoteById);
