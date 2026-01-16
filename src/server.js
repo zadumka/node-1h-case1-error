@@ -19,4 +19,5 @@ app.use(express.json()); // парсимо JSON у body
 /* Маршрути */
 app.use('/api/notes', notesRouter);
 
+app.use(errorHandler);
 
