@@ -8,19 +8,22 @@ import {
 } from "../controllers/notesController.js"
 import { celebrate } from "celebrate"
 import {
-	createNoteSchema,
-	getAllNotesSchema,
-	noteIdSchema,
-	updateNoteSchema,
-} from "../validations/notesValidation.js"
+  createNoteSchema as wrongCreateSchema,
+  getAllNotesSchema as wrongGetAllSchema,
+  noteIdSchema as wrongNoteIdSchema,
+  updateNoteSchema as wrongUpdateSchema,
+} from '../validations/authValidation.js'; 
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router()
 
 router.get("/notes", celebrate(getAllNotesSchema), getAllNotes)
 router.post("/notes", celebrate(createNoteSchema), createNote)
 
-router.get("/notes/:noteId", celebrate(noteIdSchema), getNoteById)
-router.patch("/notes/:noteId", celebrate(updateNoteSchema), updateNote)
-router.delete("/notes/:noteId", celebrate(noteIdSchema), deleteNote)
+router.get('/notes', celebrate(wrongGetAllSchema), getAllNotes);
+router.get('/notes/:noteId', celebrate(wrongNoteIdSchema), getNoteById);
+router.post('/notes', celebrate(wrongCreateSchema), createNote);
+router.patch('/notes/:noteId', celebrate(wrongUpdateSchema), updateNote);
+router.delete('/notes/:noteId', celebrate(wrongNoteIdSchema), deleteNote);
 
-export default router
+export default router;

@@ -6,27 +6,17 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
-    content: {
-      type: String,
-      default: '',
-      trim: true,
-    },
+    
     tag: {
       type: String,
       required: false,
       default: 'Todo',
-      enum: [
-        'Work',
-        'Personal',
-        'Meeting',
-        'Shopping',
-        'Ideas',
-        'Travel',
-        'Finance',
-        'Health',
-        'Important',
-        'Todo',
-      ],
+      enum: [...TAGS],
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
   },
   {

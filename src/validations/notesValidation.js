@@ -1,20 +1,19 @@
-import { Joi, Segments } from 'celebrate';
-import { TAGS } from '../constants/tags.js';
-import { isValidObjectId } from 'mongoose';
+import { Joi, Segments } from "celebrate";
+import { TAGS } from "../constants/tags.js";
+import { isValidObjectId } from "mongoose";
 
-export const getAllNotesSchema = {
+
+export const getAllNotesSchema  = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),
-    perPage: Joi.number().integer().min(5).max(20).default(10),
-    tag: Joi.string().valid(...TAGS),
-    search: Joi.string().trim().allow(''),
-    sortBy: Joi.string().valid('_id', 'tag').default('_id'),
-    sortOrder: Joi.string().valid('asc', 'desc').default('asc'),
+    perPage:Joi.number().integer().min(5).max(20).default(10),
+    tag: Joi.string().valid(...TAGS).optional(),
+    search: Joi.string().allow("").optional(),
   }),
 };
 
 const objectIdValidator = (value, helpers) => {
-  return !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
+  return !isValidObjectId(value) ? helpers.message("Invalid id format") : value;
 };
 
 export const noteIdSchema = {
@@ -31,13 +30,21 @@ export const createNoteSchema = {
   })
 };
 
-export const updateNoteSchema = {
-  [Segments.PARAMS]: Joi.object({
-    noteId: Joi.string().custom(objectIdValidator),
-  }),
+export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
-    title: Joi.string().min(1),
-    content: Joi.string().trim().allow(''),
-    tag: Joi.string().valid(...TAGS),
-  }).min(1),
+    title : Joi.string().min(1).required(),
+    content: Joi.string().optional(),
+     tag: Joi.string().valid(...TAGS).optional(),
+  })
 };
+export const updateNoteSchema  = {
+  [Segments.PARAMS]: Joi.object({
+   noteId: Joi.string().custom(objectIdValidator).required(),
+  }),
+   [Segments.BODY]: Joi.object({
+    title : Joi.string().min(1),
+    content: Joi.string().allow(""),
+    tag: Joi.string().valid(...TAGS),
+  })
+};
+

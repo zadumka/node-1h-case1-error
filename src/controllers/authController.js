@@ -1,3 +1,6 @@
+import bcrypt from "bcrypt";
+import createHttpError from "http-errors";
+import { User } from "../models/user.js";
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
@@ -9,12 +12,16 @@ import { Session } from '../models/session.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { sendEmail } from '../utils/sendMail.js';
 
+import { createSession, setSessionCookies } from "../services/auth.js";
+import { Session } from "../models/session.js";
+
+/*registerUser*/
 export const registerUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return next(createHttpError(400, 'Email in use'));
+    return next(createHttpError(400, "Email in use"));
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,9 +35,12 @@ export const registerUser = async (req, res, next) => {
   const newSession = await createSession(newUser._id);
   setSessionCookies(res, newSession);
 
-  res.status(201).json(newUser);
+  res.status(201).json({
+user: newUser.toJSON(),
+  });
 };
 
+/*loginUser*/
 export const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -38,12 +48,12 @@ export const loginUser = async (req, res, next) => {
   if (!user) {
     return next(createHttpError(401, 'User not found'));
   }
-
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
     return next(createHttpError(401, 'Invalid credentials'));
   }
 
+  await Session.deleteOne({ userId: user._id });
   // Delete old session
   await Session.deleteOne({ userId: user._id });
 
@@ -51,9 +61,13 @@ export const loginUser = async (req, res, next) => {
   const newSession = await createSession(user._id);
   setSessionCookies(res, newSession);
 
-  res.status(200).json(user);
+
+  res.status(200).json({
+  user: user.toJSON(),
+  });
 };
 
+/*logoutUser*/
 export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;
 
@@ -68,21 +82,22 @@ export const logoutUser = async (req, res) => {
   res.status(204).send();
 };
 
+
+
+/*refreshUserSession*/
 export const refreshUserSession = async (req, res, next) => {
   // Find and check existing session
   const session = await Session.findOne({
     _id: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
-
-  if (!session) {
+if (!session) {
     return next(createHttpError(401, 'Session not found'));
   }
 
-  const isSessionTokenExpired =
+  const isRefreshTokenExpired =
     new Date() > new Date(session.refreshTokenValidUntil);
-
-  if (isSessionTokenExpired) {
+  if (isRefreshTokenExpired) {
     return next(createHttpError(401, 'Session token expired'));
   }
 
