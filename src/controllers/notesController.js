@@ -1,76 +1,47 @@
-
-import { Note } from '../models/note.js';
 import createHttpError from 'http-errors';
+import { Note } from '../models/note.js';
 
 export const getAllNotes = async (req, res) => {
-	const notes = await Note.find();
-	res.status(200).json(notes);
+  const notes = await Note.find();
+  res.status(200).json(notes);
 };
 
-export const getNoteById = async (req, res, next) => {
-	const { noteId } = req.params;
-
-	try {
-		const note = await Note.findById(noteId);
-
-		if (!note) {
-			next(get_404_ById(noteId));
-			return;
-		}
-
-		res.status(200).json(note);
-	} catch (error) {
-		next(error)
-	}
-
+export const getNoteById = async (req, res) => {
+  const { noteId } = req.params;
+  const note = await Note.findById(noteId);
+  if (!note) {
+    throw createHttpError(404, 'Note not found');
+  }
+  res.status(200).json(note);
 };
 
 export const createNote = async (req, res) => {
-	const newNote = await Note.create(req.body);
-	res.status(201).json(newNote);
+  const newNote = await Note.create(req.body);
+  res.status(201).json(newNote);
 };
 
-export const deleteNote = async (req, res, next) => {
-	const { noteId } = req.params;
+export const deleteNote = async (req, res) => {
+  const note = await Note.findOneAndDelete({
+    _id: req.params.noteId,
+  });
 
-	try {
-		const deletedNote = await Note.findOneAndDelete({
-			_id: noteId,
-		});
+  if (!note) {
+    throw createHttpError(404, 'Note not found');
+  }
 
-		if (!deletedNote) {
-			next(get_404_ById(noteId));
-			return;
-		}
-
-		res.status(200).json(deletedNote);
-	} catch (error) {
-		next(error)
-	}
+  res.status(200).send(note);
 };
 
-export const updateNote = async (req, res, next) => {
-	const { noteId } = req.params;
+export const updateNote = async (req, res) => {
+  const note = await Note.findOneAndUpdate(
+    { _id: req.params.noteId },
+    req.body,
+    { returnDocument: 'after' },
+  );
 
-	try {
-		const updatedNote = await Note.findOneAndUpdate(
-			{ _id: noteId },
-			req.body,
-			{ new: true },
-		);
+  if (!note) {
+    throw createHttpError(404, 'Note not found');
+  }
 
-		if (!updatedNote) {
-			next(get_404_ById(noteId));
-			return;
-		}
-
-		res.status(200).json(updatedNote);
-	} catch (error) {
-		next(error)
-
-	}
+  res.status(200).json(note);
 };
-
-const get_404_ById = (noteId) => {
-	return createHttpError(404, `Note not found by id ${noteId}`)
-} 
